@@ -1,6 +1,10 @@
-/**
+/*
  * Created by ravibhankharia on 11/27/16.
+ * Network Security Computer Project
  */
+
+import org.jetbrains.annotations.Nullable;
+import org.omg.CORBA.INTERNAL;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -12,7 +16,7 @@ public class main {
             final long startTime = System.currentTimeMillis();
             final String IV;
             final String ciphertext;
-            int probNumber = 2;
+            int probNumber = Integer.parseInt(args[0]);
             if (probNumber == 1){
                 IV = "639404CBD1A1BD2322B206C39140";
                 ciphertext = "5A052F928464CC3E437187ADCFC7E8F1CF9DEAC7059B5264E4E940D8C35AA60E2277D4832843043F593F40E4084609C886681BCF5B570D353BFF24C0E1F4A65E";
@@ -35,13 +39,19 @@ public class main {
             }
             int i = 0x0;
             String hexString;   //holds hex version of i in a string
+            String output;
 
-            for (; i < Integer.parseInt(maxKey.toString(), 16); i++){
+
+            long maxKeyLong = Long.parseLong(maxKey.toString(), 16);
+            for (; i < maxKeyLong; i++){
                 hexString = Integer.toHexString(i);     //converts integer to hex string representation
                 for(int k = 0; k < keyLen-hexString.length(); k++){ //Generate padding as a StringBuilder
                     padding.append("0");
                 }
-                System.out.print(decrypt(IV + padding.toString() + hexString, ciphertext));
+                output = decrypt(IV + padding.toString() + hexString, ciphertext);
+                if (output != null){
+                    System.out.print(output);
+                }
                 padding = new StringBuilder();  //clear padding
             }
             final long endTime = System.currentTimeMillis();
@@ -49,7 +59,8 @@ public class main {
 
         }
 
-        public static String decrypt(String keyHex, String ciphertextHex) throws Exception{
+        @Nullable
+        private static String decrypt(String keyHex, String ciphertextHex) throws Exception{
             SecretKey skey = new SecretKeySpec(DatatypeConverter
                     .parseHexBinary(keyHex), "AES");
 
@@ -60,18 +71,21 @@ public class main {
 
             Boolean res = isValid(result);
             if (!res){
-                return "";
+                return null;
             }
             return new String(result, "UTF-8") + "\n";
 
 
         }
 
-        public static boolean isValid(byte[] arr){
+        private static boolean isValid(byte[] arr){
             int threshold = 0;
             for (int j = 0; j < arr.length; j++){
-                if (arr[j] > 0x7E || arr[j] < 0x20){
-                    if (threshold>20){
+                if (arr[j] == 0x0){
+                    arr[j] = 0x20;  //Ignore the padding at the end (convert to spaces
+                }
+                if (arr[j] > 0x7E || arr[j] < 0x20){    //Check if valid ASCII value
+                    if (threshold>3){
                         return false;
                     }else{
                         threshold++;
