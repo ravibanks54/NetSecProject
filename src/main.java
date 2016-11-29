@@ -10,9 +10,26 @@ import java.util.Arrays;
 
 public class main {
         public static void main(String[] args) throws Exception {
-            String IV = "639404CBD1A1BD2322B206C39140";
-            String ciphertext = "5A052F928464CC3E437187ADCFC7E8F1CF9DEAC7059B5264E4E940D8C35AA60E2277D4832843043F593F40E4084609C886681BCF5B570D353BFF24C0E1F4A65E";
+            final String IV = "639404CBD1A1BD2322B206C39140";
+            final String ciphertext = "5A052F928464CC3E437187ADCFC7E8F1CF9DEAC7059B5264E4E940D8C35AA60E2277D4832843043F593F40E4084609C886681BCF5B570D353BFF24C0E1F4A65E";
+            int keyLen = 32 - IV.length();  //Holds length of key after IV
+            StringBuilder maxKey = new StringBuilder();
+            StringBuilder padding = new StringBuilder();
+            for (int j=0; j < keyLen; j++){ //Generate max hex value for for loop
+                maxKey.append(Integer.toHexString(0xF));
+            }
             int i = 0x0;
+            String hexString;   //holds hex version of i in a string
+
+            for (; i < Integer.parseInt(maxKey.toString(), 16); i++){
+                hexString = Integer.toHexString(i);     //converts integer to hex string representation
+                for(int k = 0; k < keyLen-hexString.length(); k++){ //Generate padding as a StringBuilder
+                    padding.append("0");
+                }
+                System.out.print(decrypt(IV + padding.toString() + hexString, ciphertext));
+                padding = new StringBuilder();  //clear padding
+            }
+            /*
             for (; i < 0xF; i++){
                 //System.out.println(i);
                 System.out.print(decrypt(IV + "000" + Integer.toHexString(i), ciphertext));
@@ -31,7 +48,7 @@ public class main {
             for (; i < 0xFFFF; i++){
                 //System.out.println(i);
                 System.out.print(decrypt(IV + Integer.toHexString(i), ciphertext));
-            }
+            }*/
         }
 
         public static String decrypt(String keyHex, String ciphertextHex) throws Exception{
@@ -44,7 +61,6 @@ public class main {
             byte[] result = cipher.doFinal(DatatypeConverter.parseHexBinary(ciphertextHex));
 
             Boolean res = isValid(result);
-            //System.out.println(res);
             if (!res){
                 return "";
             }
@@ -56,12 +72,10 @@ public class main {
         public static boolean isValid(byte[] arr){
             int threshold = 0;
             for (int j = 0; j < arr.length; j ++){
-                //System.out.println(arr[j]);
                 if (arr[j] > 0x7E || arr[j] < 0x20){
                     threshold++;
                 }
             }
-            //System.out.println(threshold);
             if (threshold > 20){
                 return false;
             }else{
