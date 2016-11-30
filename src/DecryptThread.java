@@ -25,7 +25,7 @@ public class DecryptThread extends Thread{
 
         for (long i = start; i < end; i++) {
             if (i % 1000000 == 0) {
-                System.out.println(i);
+                //System.out.println(i);
             }
             hexString = Long.toHexString(i);     //converts integer to hex string representation
             for (int k = 0; k < keyLen - hexString.length(); k++) { //Generate padding as a StringBuilder
