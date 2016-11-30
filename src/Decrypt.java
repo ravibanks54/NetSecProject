@@ -30,14 +30,21 @@ public class Decrypt {
 
             int keyLen = 32 - IV.length();  //Holds length of key after IV
             StringBuilder maxKey = new StringBuilder();
-            StringBuilder padding = new StringBuilder();
-            for (int j=0; j < keyLen; j++){ //Generate max hex value for for loop
+
+            for (int j=0; j < keyLen; j++) { //Generate max hex value for for loop
                 maxKey.append(Integer.toHexString(0xF));
             }
+            long maxKeyLong = Long.parseLong(maxKey.toString(), 16);
+            int numDivisions = 4;
+            long keySpace = maxKeyLong/numDivisions;
+            for (int k = 0; k < numDivisions; k++){
+                new DecryptThread(k*keySpace, (k+1)*keySpace, IV, ciphertext).start();
+            }
+            /*
             int i = 0x0;
             String hexString;   //holds hex version of i in a string
             String output;
-
+            StringBuilder padding = new StringBuilder();
 
             long maxKeyLong = Long.parseLong(maxKey.toString(), 16);
             for (; i < maxKeyLong; i++){
@@ -54,12 +61,13 @@ public class Decrypt {
                 }
                 padding = new StringBuilder();  //clear padding
             }
+            */
             final long endTime = System.currentTimeMillis();
             System.out.println("Total execution time: " + (endTime - startTime) );
 
         }
 
-        private static String decrypt(String keyHex, String ciphertextHex) throws Exception{
+        public static String decrypt(String keyHex, String ciphertextHex) throws Exception{
             SecretKey skey = new SecretKeySpec(DatatypeConverter
                     .parseHexBinary(keyHex), "AES");
 
