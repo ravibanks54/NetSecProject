@@ -35,7 +35,7 @@ public class Decrypt {
                 maxKey.append(Integer.toHexString(0xF));
             }
             long maxKeyLong = Long.parseLong(maxKey.toString(), 16);
-            int numDivisions = 4;
+            int numDivisions = 16;
             long keySpace = maxKeyLong/numDivisions;
             for (int k = 0; k < numDivisions; k++){
                 new DecryptThread(k*keySpace, (k+1)*keySpace, IV, ciphertext).start();

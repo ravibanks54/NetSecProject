@@ -34,7 +34,7 @@ public class DecryptThread extends Thread{
             try {
                 output = Decrypt.decrypt(IV + padding.toString() + hexString, ciphertext);
             } catch (Exception e) {
-                output = "";
+                output = null;
             }
             if (output != null){
                 System.out.print(output);
