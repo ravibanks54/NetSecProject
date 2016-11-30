@@ -3,15 +3,12 @@
  * Network Security Computer Project
  */
 
-import org.jetbrains.annotations.Nullable;
-import org.omg.CORBA.INTERNAL;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
-public class main {
+public class Decrypt {
         public static void main(String[] args) throws Exception {
             final long startTime = System.currentTimeMillis();
             final String IV;
@@ -44,6 +41,9 @@ public class main {
 
             long maxKeyLong = Long.parseLong(maxKey.toString(), 16);
             for (; i < maxKeyLong; i++){
+                if (i%1000000 == 0){
+                    System.out.println(i);
+                }
                 hexString = Integer.toHexString(i);     //converts integer to hex string representation
                 for(int k = 0; k < keyLen-hexString.length(); k++){ //Generate padding as a StringBuilder
                     padding.append("0");
@@ -59,7 +59,6 @@ public class main {
 
         }
 
-        @Nullable
         private static String decrypt(String keyHex, String ciphertextHex) throws Exception{
             SecretKey skey = new SecretKeySpec(DatatypeConverter
                     .parseHexBinary(keyHex), "AES");
