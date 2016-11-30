@@ -17,6 +17,7 @@ public class DecryptThread extends Thread{
     }
     @Override
     public void run(){
+        final long startTime = System.currentTimeMillis();
         String hexString;   //holds hex version of i in a string
         String output;
         StringBuilder padding = new StringBuilder();
@@ -38,8 +39,11 @@ public class DecryptThread extends Thread{
             }
             if (output != null){
                 System.out.print(output);
+                System.out.println("Time to solution: " +  (System.currentTimeMillis() - startTime));
+
             }
             padding.setLength(0);  //clear padding
         }
+        System.out.println("Time to finish: " + (System.currentTimeMillis() - startTime));
     }
 }

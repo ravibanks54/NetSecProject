@@ -61,9 +61,10 @@ public class Decrypt {
                 }
                 padding = new StringBuilder();  //clear padding
             }
-            */
+
             final long endTime = System.currentTimeMillis();
             System.out.println("Total execution time: " + (endTime - startTime) );
+            */
 
         }
 
